@@ -1,35 +1,36 @@
-version: '3.6'
+version: '3.9'
 services:
-  rrdev:
+  app:
     build:
-      ./php
+      context: ./php
+      dockerfile: Dockerfile
     ports:
-    - "80:80"
-    depends_on:
-    - mysql
-    links:
-    - mysql
+      - "80:80"
     volumes:
-    - ./src:/var/www/html
+      - ./app:/var/www/html
+    depends_on:
+      - db
+  db:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: example
+      MYSQL_USER: example
+      MYSQL_PASSWORD: example
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: example
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
 
-  # mysql:
-  #   image: mariadb:${MARIADB_VERSION:-latest}
-  #   volumes:
-  #     - ./db:/var/lib/mysql
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=root
-  #     # - MYSQL_USER=rrdev
-  #     - MYSQL_DATABASE=rrdev
-
-  # phpmyadmin:
-  #   depends_on:
-  #     - mysql
-  #   image: phpmyadmin/phpmyadmin:${PHPMYADMIN_VERSION:-latest}
-  #   container_name: ${COMPOSE_PROJECT_NAME}_phpmyadmin
-  #   ports:
-  #     - 8080:80
-  #   environment:
-  #     PMA_HOST: mysql
-  #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
-  #     UPLOAD_LIMIT: 20M
 
