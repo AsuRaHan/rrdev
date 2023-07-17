@@ -1,4 +1,11 @@
 /db/*
+/app/*.log
+/app/*.db
+/app/.env
+/app/composer.lock
+/app/nbproject/*
+/app/usersessions/*
+/app/vendor/*
 *.log
 /src/nbproject/*
 /.idea/*
